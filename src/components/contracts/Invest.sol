@@ -106,7 +106,7 @@ contract celoinvest{
         );
     }
     // function to check if the loan is mature we use a test period of 2 minutes
-    function isLoanMature(uint _index)public view isAdmin(_index)returns(bool) {
+    function isInvestmentMature(uint _index)public view isAdmin(_index)returns(bool) {
         if(block.timestamp > (investments[_index].timestamp + 2 minutes)){
             return true;
         }

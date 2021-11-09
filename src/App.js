@@ -8,14 +8,15 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Web3 from "web3";
 import { newKitFromWeb3 } from "@celo/contractkit";
 import BigNumber from "bignumber.js";
-import abi from "./components/contracts/abi.abi.json";
+import abi from "./components/contracts/invest.abi.json";
 import IERC20 from "./components/contracts/IERC20.abi.json";
+import {
+  contractAddress,
+  cUSDContractAddress,
+  ERC20_DECIMALS,
+} from "./utils/constants";
+
 function App() {
-  const ERC20_DECIMALS = 18;
-
-  const contractAddress = "0x678289796f4336E7044EE73fA9916D587eafa156";
-  const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1";
-
   const [usdBalance, setUsdBalance] = useState(0);
   const [contract, setContract] = useState(null);
   const [address, setAddress] = useState(null);
@@ -131,7 +132,6 @@ function App() {
   };
 
   const matureHandler = async (index) => {
-    console.log(index);
     try {
       await contract.methods.isInvestmentMature(index).send({ from: address });
       listOfInvestments();
@@ -141,13 +141,14 @@ function App() {
   };
 
   const payInvestment = async (investment) => {
-    console.log("Pay");
     try {
       const cUSDContract = new kit.web3.eth.Contract(
         IERC20,
         cUSDContractAddress
       );
-      const amount = new BigNumber(10/100 + investment.amount * investment.amount)
+      const amount = new BigNumber(
+        10 / 100 + investment.amount * investment.amount
+      )
         .shiftedBy(ERC20_DECIMALS)
         .toString();
       await cUSDContract.methods
@@ -180,7 +181,6 @@ function App() {
       isUserAdmin();
     }
   }, [contract]);
-
 
   return (
     <Router>
